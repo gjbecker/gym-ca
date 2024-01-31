@@ -48,7 +48,7 @@ def run_episode(env):
     step = 0
     terminated = False
     timeout = False
-    radii, states, actions, rewards, goals, pols = ([] for _ in range(6))
+    observations, radii, states, actions, rewards, goals, pols = ([] for _ in range(7))
     while not terminated:
         obs, rew, terminated, truncated, info = env.step(None)
         total_reward += rew
@@ -56,7 +56,7 @@ def run_episode(env):
         if step == Config.MAX_EP_LEN:
             terminated = True
             timeout = True
-
+        
         if Config.GENERATE_DATASET:
             state, action, reward, terminals, timeouts = ([] for _ in range(5))
             for i, agent in enumerate(env.agents):
@@ -72,18 +72,21 @@ def run_episode(env):
             rewards.append(reward)
             terminals.append(terminated)
             timeouts.append(timeout)
+
+        if Config.D4RL:
+            observations.append(obs)
             
     if Config.GENERATE_DATASET:
         new_states, new_actions, new_rewards = ([] for _ in range(3))
         for j in range(len(env.agents)):
-            new_state, new_action, new_reward = ([] for _ in range(3))
+            agent_state, agent_action, agent_reward = ([] for _ in range(3))
             for i in range(step):
-                new_state.append(states[i][j])
-                new_action.append(actions[i][j])
-                new_reward.append(rewards[i][j])
-            new_states.append(new_state)
-            new_actions.append(new_action)
-            new_rewards.append(new_reward)
+                agent_state.append(states[i][j])
+                agent_action.append(actions[i][j])
+                agent_reward.append(rewards[i][j])
+            new_states.append(agent_state)
+            new_actions.append(agent_action)
+            new_rewards.append(agent_reward)
 
         episode = {
             'steps': step,
@@ -97,7 +100,14 @@ def run_episode(env):
             'policies': pols
             }
             
-
+    if Config.D4RL:
+        d4rl = {
+            'observations': np.array(observations), 
+            'actions': np.array(actions),
+            'rewards': np.array(rewards),
+            'terminals': np.array(terminals), 
+            'timeouts': np.array(timeouts)
+        }
     # After end of episode, store some statistics about the environment
     # Some stats apply to every gym env...
     generic_episode_stats = {
@@ -143,7 +153,7 @@ def run_episode(env):
 
     env.reset()
 
-    return episode_stats, agents, episode
+    return episode_stats, agents, episode, d4rl
 
 
 def store_stats(df, hyperparameters, episode_stats):

@@ -63,6 +63,7 @@ def main():
     Config.PLOT_CIRCLES_ALONG_TRAJ = True
     Config.RECORD_PICKLE_FILES = True
     Config.GENERATE_DATASET = True
+    Config.D4RL = True
     Config.PLT_LIMITS = [[-8, 8], [-8, 8]]
 
     # REWARD params
@@ -77,10 +78,10 @@ def main():
 
     # Data Gen params
     # num_agents_to_test = range(10,11)
-    num_agents_to_test = [4]
+    num_agents_to_test = [2]
     # num_agents_to_test = ['multi']
-    num_test_cases = 5000
-    policies = ['circle8']
+    num_test_cases = 500
+    policies = ['RVO']
 
     test_case_fn = tc.get_testcase_random
     test_case_args = {
@@ -116,13 +117,14 @@ def main():
             for policy in policies:
                 env.set_plot_save_dir(
                 os.path.dirname(os.path.realpath(__file__))
-                + "/DATA/results/{policy}_{num_agents}_agents/figs/"
-                .format(policy=policy, num_agents=num_agents)
+                + "/DATA/{policy}_{num_agents}_agent_{num_test_cases}/figs/"
+                .format(policy=policy, num_agents=num_agents, num_test_cases=num_test_cases)
             )
                 np.random.seed(0)
                 prev_agents = None
                 df = pd.DataFrame()
                 datasets = []
+                all_d4rl = {'observations':[], 'actions':[], 'rewards':[], 'terminals':[], 'timeouts':[]}
                 for test_case in range(num_test_cases):
                     ##### Actually run the episode ##########
                     init_obs, _ = reset_env(
@@ -135,37 +137,43 @@ def main():
                         policy,
                         prev_agents,
                     )
-                    episode_stats, prev_agents, dataset = run_episode(env)
+                    episode_stats, prev_agents, dataset, d4rl = run_episode(env)
+                    # Dataset preprocessing
                     datasets.append(dataset)
+                    all_d4rl['observations'].append(d4rl['observations'])
+                    all_d4rl['actions'].append(d4rl['actions'])
+                    all_d4rl['rewards'].append(d4rl['rewards'])
+                    all_d4rl['terminals'].append(d4rl['terminals'])
+                    all_d4rl['timeouts'].append(d4rl['timeouts'])
 
-                    # print(episode_stats)
                     df = store_stats(
                         df,
                         {"test_case": test_case, "policy_id": policy},
                         episode_stats,
                     )
                     logging.info(f'EPISODE {test_case}: {episode_stats}')
-                    ########################################
+
                     pbar.update(1)
 
+                file_dir = os.path.dirname(os.path.realpath(__file__))+ "/DATA/{}_{}_agent_{}".format(policy, num_agents, num_test_cases)
+                os.makedirs(file_dir, exist_ok=True)
                 if Config.GENERATE_DATASET:
-                    file_dir = os.path.dirname(os.path.realpath(__file__))+ "/DATA/datasets/{}_{}_agent_{}".format(policy, num_agents, num_test_cases)
-                    with open(file_dir + '.pkl', 'wb') as handle:
+                    file = file_dir + '/dataset.p'
+                    with open(file, 'wb') as handle:
                         pickle.dump(datasets, handle, protocol=pickle.HIGHEST_PROTOCOL)       
                     print(f'Generated Dataset Length: {len(datasets)}')
-
+                if Config.D4RL:
+                    file = file_dir + '/d4rl.p'
+                    with open(file, 'wb') as handle:
+                        pickle.dump(all_d4rl, handle, protocol=pickle.HIGHEST_PROTOCOL)  
                 if Config.RECORD_PICKLE_FILES:
-                    file_dir = os.path.dirname(os.path.realpath(__file__)) + "/DATA/results/"
-                    file_dir += "{policy}_{num_agents}_agents/stats/".format(policy=policy, num_agents=num_agents)
-                    os.makedirs(file_dir, exist_ok=True)
-                    log_filename = file_dir + "/{}_{}_{}_stats.p".format(policy, num_agents, num_test_cases)
+                    log_filename = file_dir + "/stats.p"
                     df.to_pickle(log_filename)
     return True
 
-
 if __name__ == "__main__":
     logging.basicConfig(filename=os.path.dirname(os.path.realpath(__file__))
-                        + "/DATA/datasets/DATASET.log", filemode='w', level=logging.DEBUG)
+                        + "/DATA/DATASET.log", filemode='w', level=logging.DEBUG)
     logging.info('started')
     main()
     logging.info('finished')

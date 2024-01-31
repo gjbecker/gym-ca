@@ -5,7 +5,7 @@ class Config(object):
         #########################################################################
         # GENERAL PARAMETERS
         self.GENERATE_DATASET = True
-
+        self.D4RL = True
         self.COLLISION_AVOIDANCE = True
         self.continuous, self.discrete = range(2) # Initialize game types as enum
         self.ACTION_SPACE_TYPE   = self.continuous
