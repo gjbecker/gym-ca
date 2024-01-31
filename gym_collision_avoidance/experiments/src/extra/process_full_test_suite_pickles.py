@@ -12,13 +12,15 @@ from gym_collision_avoidance.envs.policies.GA3CCADRLPolicy import GA3CCADRLPolic
 
 from datetime import datetime
 
+import pandas as pd
+
 wandb_dir = '/home/mfe/code/'
 
 ##########################
 # Set up logging as print to terminal and file
 # 
 log_filename = '{dir}/results/full_test_suites/full_test_suite_results_{datetime}.txt'.format(
-                    dir=os.path.dirname(os.path.realpath(__file__)),
+                    dir=os.path.dirname(os.path.dirname(os.path.realpath(__file__))),
                     datetime=datetime.now().strftime("%Y_%m_%d_%H_%M_%S"),
                     ) 
 log = open(log_filename, "w")
@@ -53,9 +55,9 @@ policies = {
             'RVO': {
                 'order': 0
                 },
-            'DRL-Long': {
-                'order': 3
-                },
+            # 'DRL-Long': {
+            #     'order': 3
+            #     },
             }
 ordered_policies = [key for key,value in sorted(policies.items(), key=lambda item: item[1]['order'])]
 num_agents_to_test = [2,3,4]
@@ -64,7 +66,7 @@ num_test_cases = 100
 # num_test_cases = 500
 # num_test_cases = Config.NUM_TEST_CASES
 
-vpref1 = True
+vpref1 = False
 radius_bounds = [0.2, 0.2]
 if vpref1:
     vpref1_str = 'vpref1.0_r{}-{}/'.format(radius_bounds[0], radius_bounds[1])
@@ -84,7 +86,7 @@ for num_agents in num_agents_to_test:
     write("Num agents: {}\n".format(num_agents))
     stats = {}
     for policy in policies:
-        pickle_filename = '{dir}/results/full_test_suites/{vpref1_str}{num_agents}_agents/stats/{policy}.p'.format(vpref1_str=vpref1_str, dir=os.path.dirname(os.path.realpath(__file__)), num_agents=num_agents, policy=policy) 
+        pickle_filename = '{dir}/results/full_test_suites/{vpref1_str}{num_agents}_agents/stats/stats_{policy}.p'.format(vpref1_str=vpref1_str, dir=os.path.dirname(os.path.dirname(os.path.realpath(__file__))), num_agents=num_agents, policy=policy) 
         stats[policy] = pickle.load(open(pickle_filename, 'rb'))
 
     non_collision_inds = reduce(np.intersect1d, (stats[policy]['non_collision_inds'] for policy in policies))

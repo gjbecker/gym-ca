@@ -4,14 +4,16 @@ class Config(object):
     def __init__(self):
         #########################################################################
         # GENERAL PARAMETERS
+        self.GENERATE_DATASET = True
+
         self.COLLISION_AVOIDANCE = True
         self.continuous, self.discrete = range(2) # Initialize game types as enum
         self.ACTION_SPACE_TYPE   = self.continuous
 
         ### DISPLAY
         self.ANIMATE_EPISODES    = False
-        self.SHOW_EPISODE_PLOTS = False
-        self.SAVE_EPISODE_PLOTS = False
+        self.SHOW_EPISODE_PLOTS = True
+        self.SAVE_EPISODE_PLOTS = True
         if not hasattr(self, "PLOT_CIRCLES_ALONG_TRAJ"):
             self.PLOT_CIRCLES_ALONG_TRAJ = True
         self.ANIMATION_PERIOD_STEPS = 5 # plot every n-th DT step (if animate mode on)
@@ -22,9 +24,9 @@ class Config(object):
             self.USE_STATIC_MAP = False
         
         ### TRAIN / PLAY / EVALUATE
-        self.TRAIN_MODE           = True # Enable to see the trained agent in action (for testing)
+        self.TRAIN_MODE           = False # Enable to see the trained agent in action (for testing)
         self.PLAY_MODE           = False # Enable to see the trained agent in action (for testing)
-        self.EVALUATE_MODE       = False # Enable to see the trained agent in action (for testing)
+        self.EVALUATE_MODE       = True # Enable to see the trained agent in action (for testing)
         
         ### REWARDS
         self.REWARD_AT_GOAL = 1.0 # reward given when agent reaches goal position
@@ -40,25 +42,28 @@ class Config(object):
         # self.SOCIAL_NORMS = "right"
         # self.SOCIAL_NORMS = "left"
         self.SOCIAL_NORMS = "none"
+        self.REACHER = False
 
         ### SIMULATION
         self.DT             = 0.2 # seconds between simulation time steps
         self.NEAR_GOAL_THRESHOLD = 0.2
         self.MAX_TIME_RATIO = 2. # agent has this number times the straight-line-time to reach its goal before "timing out"
+        self.MAX_EP_LEN = 1000
         
         ### TEST CASE SETTINGS
         self.TEST_CASE_FN = "get_testcase_random"
         self.TEST_CASE_ARGS = {
-            'policy_to_ensure': 'learning_ga3c',
-            'policies': ['noncoop', 'learning_ga3c', 'static'],
-            'policy_distr': [0.05, 0.9, 0.05],
+            'policy_to_ensure': 'RVO',
+            'policies': ['RVO', 'noncoop', 'static', 'random'],
+            'policy_distr': [0.75, 0.10, 0.075, 0.075],
+            # 'policy_distr': [1, 0, 0, 0],
             'speed_bnds': [0.5, 2.0],
             'radius_bnds': [0.2, 0.8],
             'side_length': [
-                {'num_agents': [0,5], 'side_length': [4,5]}, 
+                {'num_agents': [0,5], 'side_length': [4,6]}, 
                 {'num_agents': [5,np.inf], 'side_length': [6,8]},
                 ],
-            # 'agents_sensors': ['other_agents_states_encoded'],
+            'agents_sensors': ['other_agents_states'],
         }
 
         if not hasattr(self, "MAX_NUM_AGENTS_IN_ENVIRONMENT"):
@@ -213,7 +218,7 @@ class Formations(EvaluateConfig):
     def __init__(self):
         EvaluateConfig.__init__(self)
         self.SAVE_EPISODE_PLOTS = True
-        self.SHOW_EPISODE_PLOTS = False
+        self.SHOW_EPISODE_PLOTS = True
         self.ANIMATE_EPISODES = True
         self.NEAR_GOAL_THRESHOLD = 0.2
         self.PLT_LIMITS = [[-5, 6], [-2, 7]]
@@ -244,7 +249,7 @@ class LargeNumAgents(EvaluateConfig):
         self.PLT_LIMITS = [[-20, 20], [-15, 15]]
         self.NUM_TEST_CASES = 10
         self.NUM_AGENTS_TO_TEST = [40]
-        self.RECORD_PICKLE_FILES = False
+        self.RECORD_PICKLE_FILES = True
         self.POLICIES_TO_TEST = [
             'GA3C-CADRL-10'
             ]
@@ -262,7 +267,7 @@ class FullTestSuite(EvaluateConfig):
 
         self.NUM_TEST_CASES = 4
         self.NUM_AGENTS_TO_TEST = [2,3,4]
-        self.RECORD_PICKLE_FILES = False
+        self.RECORD_PICKLE_FILES = True
 
         # # DRLMACA
         # self.FIXED_RADIUS_AND_VPREF = True
@@ -302,3 +307,38 @@ class CollectRegressionDataset(EvaluateConfig):
 
         # # Laserscan mode
         # self.TEST_CASE_ARGS['agents_sensors'] = ['laserscan', 'other_agents_states']
+
+class DataGeneration(EvaluateConfig):
+    def __init__(self):
+        EvaluateConfig.__init__(self)
+        self.SAVE_EPISODE_PLOTS = False
+        self.SHOW_EPISODE_PLOTS = False
+        self.ANIMATE_EPISODES = False
+        self.PLOT_CIRCLES_ALONG_TRAJ = False
+        self.PLT_LIMITS = [[-15, 15], [-15, 15]]
+
+        self.NUM_TEST_CASES = 100
+        self.NUM_AGENTS_TO_TEST = range(2,11)
+        self.RECORD_PICKLE_FILES = True
+        self.GENERATE_DATASET = True
+
+        self.TEST_CASE_ARGS = {
+            'policy_to_ensure': 'RVO',
+            'policies': ['RVO', 'noncoop', 'static', 'random'],
+            'policy_distr': [0.75, 0.10, 0.075, 0.075],
+            # 'policy_distr': [1, 0, 0, 0],
+            'speed_bnds': [0.5, 2.0],
+            'radius_bnds': [0.2, 0.8],
+            'side_length': [
+                {'num_agents': [0,5], 'side_length': [4,6]}, 
+                {'num_agents': [5,np.inf], 'side_length': [6,8]},
+                ],
+            'agents_sensors': ['other_agents_states'],
+        }
+
+        # Normal
+        self.POLICIES_TO_TEST = [
+            'mixed'
+            ]
+        self.FIXED_RADIUS_AND_VPREF = False
+        self.NEAR_GOAL_THRESHOLD = 0.2

@@ -3,6 +3,7 @@ import gym
 gym.logger.set_level(40)
 import numpy as np
 import pandas as pd
+import pickle
 
 from gym_collision_avoidance.envs import Config
 from gym_collision_avoidance.envs.wrappers import (
@@ -46,10 +47,56 @@ def run_episode(env):
     total_reward = 0
     step = 0
     terminated = False
+    timeout = False
+    radii, states, actions, rewards, goals, pols = ([] for _ in range(6))
     while not terminated:
         obs, rew, terminated, truncated, info = env.step(None)
         total_reward += rew
         step += 1
+        if step == Config.MAX_EP_LEN:
+            terminated = True
+            timeout = True
+
+        if Config.GENERATE_DATASET:
+            state, action, reward, terminals, timeouts = ([] for _ in range(5))
+            for i, agent in enumerate(env.agents):
+                if step == 1:
+                    radii.append(agent.radius)
+                    goals.append([agent.goal_global_frame[0], agent.goal_global_frame[1]])
+                    pols.append(agent.policy.str)
+                state.append([agent.pos_global_frame[0].copy(), agent.pos_global_frame[1].copy(), agent.heading_global_frame.copy()])
+                action.append([agent.past_actions[0][0].copy(), agent.past_actions[0][1].copy()])
+                reward.append(rew[i].copy())
+            states.append(state)
+            actions.append(action)
+            rewards.append(reward)
+            terminals.append(terminated)
+            timeouts.append(timeout)
+            
+    if Config.GENERATE_DATASET:
+        new_states, new_actions, new_rewards = ([] for _ in range(3))
+        for j in range(len(env.agents)):
+            new_state, new_action, new_reward = ([] for _ in range(3))
+            for i in range(step):
+                new_state.append(states[i][j])
+                new_action.append(actions[i][j])
+                new_reward.append(rewards[i][j])
+            new_states.append(new_state)
+            new_actions.append(new_action)
+            new_rewards.append(new_reward)
+
+        episode = {
+            'steps': step,
+            'radii': radii, 
+            'states': new_states, 
+            'actions': new_actions,
+            'rewards': new_rewards,
+            'terminals': terminals,
+            'timeouts': timeouts,
+            'goals': goals,
+            'policies': pols
+            }
+            
 
     # After end of episode, store some statistics about the environment
     # Some stats apply to every gym env...
@@ -63,6 +110,14 @@ def run_episode(env):
     extra_time_to_goal = np.array(
         [a.t - a.straight_line_time_to_reach_goal for a in agents]
     )
+    collisions, at_goal, stuck = 0,0,0
+    for a in agents:
+        if a.in_collision:
+            collisions += 1
+        elif a.is_at_goal:
+            at_goal += 1
+        else:
+            stuck += 1
     collision = np.array(np.any([a.in_collision for a in agents])).tolist()
     all_at_goal = np.array(np.all([a.is_at_goal for a in agents])).tolist()
     any_stuck = np.array(
@@ -76,9 +131,9 @@ def run_episode(env):
         "time_to_goal": time_to_goal,
         "total_time_to_goal": np.sum(time_to_goal),
         "extra_time_to_goal": extra_time_to_goal,
-        "collision": collision,
-        "all_at_goal": all_at_goal,
-        "any_stuck": any_stuck,
+        "% collisions": collisions/len(agents),
+        "% at_goal": at_goal/len(agents),
+        "% stuck": stuck/len(agents),
         "outcome": outcome,
         "policies": [agent.policy.str for agent in agents],
     }
@@ -88,7 +143,7 @@ def run_episode(env):
 
     env.reset()
 
-    return episode_stats, agents
+    return episode_stats, agents, episode
 
 
 def store_stats(df, hyperparameters, episode_stats):

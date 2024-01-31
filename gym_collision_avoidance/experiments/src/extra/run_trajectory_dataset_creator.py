@@ -15,7 +15,7 @@ np.random.seed(0)
 
 Config.EVALUATE_MODE = True
 Config.SAVE_EPISODE_PLOTS = True
-Config.SHOW_EPISODE_PLOTS = False
+Config.SHOW_EPISODE_PLOTS = True
 Config.DT = 0.1
 start_from_last_configuration = False
 
@@ -23,16 +23,17 @@ results_subdir = 'trajectory_dataset'
 
 # test_case_fn = tc.get_testcase_2agents_swap
 test_case_fn = tc.get_testcase_random
-policies = {
-            'RVO': {
-                'policy': RVOPolicy,
-                },
-            # 'GA3C-CADRL-10': {
-            #     'policy': GA3CCADRLPolicy,
-            #     'checkpt_dir': 'IROS18',
-            #     'checkpt_name': 'network_01900000'
-            #     },
-            }
+# policies = {                                    me
+#             'RVO': {
+#                 'policy': RVOPolicy,
+#                 },
+#             # 'GA3C-CADRL-10': {
+#             #     'policy': GA3CCADRLPolicy,
+#             #     'checkpt_dir': 'IROS18',
+#             #     'checkpt_name': 'network_01900000'
+#             #     },
+#             }
+policies = ['CADRL', 'RVO']
 
 num_agents_to_test = [2]
 num_test_cases = 500
@@ -105,8 +106,8 @@ def add_traj(agents, trajs, dt, traj_i, max_ts):
 
 
 def main():
-    env, one_env = create_env()
-    dt = one_env.dt_nominal
+    env = create_env()
+    dt = env.dt_nominal
     file_dir_template = os.path.dirname(os.path.realpath(__file__)) + '/../results/{results_subdir}/{num_agents}_agents'
 
     trajs = [[] for _ in range(num_test_cases)]
@@ -116,7 +117,7 @@ def main():
         file_dir = file_dir_template.format(num_agents=num_agents, results_subdir=results_subdir)
         plot_save_dir = file_dir + '/figs/'
         os.makedirs(plot_save_dir, exist_ok=True)
-        one_env.plot_save_dir = plot_save_dir
+        env.plot_save_dir = plot_save_dir
 
         test_case_args['num_agents'] = num_agents
         test_case_args['side_length'] = 7
@@ -124,26 +125,26 @@ def main():
             # test_case_args['test_case_index'] = test_case
             # test_case_args['num_test_cases'] = num_test_cases
             for policy in policies:
-                one_env.plot_policy_name = policy
-                policy_class = policies[policy]['policy']
-                test_case_args['agents_policy'] = policy_class
+                env.plot_policy_name = policy
+                # policy_class = policies[policy]['policy']     me
+                test_case_args['policies'] = policy             # policy_class
                 agents = test_case_fn(**test_case_args)
-                for agent in agents:
-                    if 'checkpt_name' in policies[policy]:
-                        agent.policy.env = env
-                        agent.policy.initialize_network(**policies[policy])
-                one_env.set_agents(agents)
-                one_env.test_case_index = test_case
+                # for agent in agents:                          me
+                #     if 'checkpt_name' in policies[policy]:
+                #         agent.policy.env = env
+                #         agent.policy.initialize_network(**policies[policy])
+                env.set_agents(agents)
+                env.test_case_index = test_case
                 init_obs = env.reset()
 
-                times_to_goal, extra_times_to_goal, collision, all_at_goal, any_stuck, agents = run_episode(env, one_env)
-
-                max_ts = [t / dt for t in times_to_goal]
+                episode_stats, agents, dataset = run_episode(env)
+                print(episode_stats)
+                max_ts = [t / dt for t in episode_stats['time_to_goal']]
                 trajs = add_traj(agents, trajs, dt, test_case, max_ts)
 
         # print(trajs)
                 
-        one_env.reset()
+        env.reset()
 
         pkl_dir = file_dir + '/trajs/'
         os.makedirs(pkl_dir, exist_ok=True)

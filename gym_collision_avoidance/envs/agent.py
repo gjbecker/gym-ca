@@ -45,10 +45,10 @@ class Agent(object):
 
         self.num_other_agents_observed = 0
 
-        self.min_x = -20.0
-        self.max_x = 20.0
-        self.min_y = -20.0
-        self.max_y = 20.0
+        self.min_x = -18.0
+        self.max_x = 18.0
+        self.min_y = -18.0
+        self.max_y = 18.0
 
         self.t_offset = None
         self.global_state_dim = 11

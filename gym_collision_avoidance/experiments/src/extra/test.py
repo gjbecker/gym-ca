@@ -28,11 +28,11 @@ def main():
     # In case you want to save plots, choose the directory
     env.set_plot_save_dir(
         os.path.dirname(os.path.realpath(__file__))
-        + "/../../../DATA/example/"
+        + "/../../experiments/results/test/"
     )
 
     # Set agent configuration (start/goal pos, radius, size, policy)
-    agents = tc.get_testcase_two_agents()
+    agents = tc.get_testcase_crazy()
     [
         agent.policy.initialize_network()
         for agent in agents
@@ -43,7 +43,7 @@ def main():
     obs = env.reset()  # Get agents' initial observations
 
     # Repeatedly send actions to the environment based on agents' observations
-    num_steps = 100
+    num_steps = 500
     for i in range(num_steps):
         # Query the external agents' policies
         # e.g., actions[0] = external_policy(dict_obs[0])
@@ -70,8 +70,7 @@ def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(filename=os.path.dirname(os.path.realpath(__file__))
-                        + '/../../../DATA/example/example.log', filemode='w', level=logging.DEBUG)
+    logging.basicConfig(filename='example.log', filemode='w', level=logging.DEBUG)
     logging.info('started')
     main()
     print("Experiment over.")
