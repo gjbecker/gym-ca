@@ -67,7 +67,7 @@ class Config(object):
         }
 
         if not hasattr(self, "MAX_NUM_AGENTS_IN_ENVIRONMENT"):
-            self.MAX_NUM_AGENTS_IN_ENVIRONMENT = 4
+            self.MAX_NUM_AGENTS_IN_ENVIRONMENT = 2
         if not hasattr(self, "MAX_NUM_AGENTS_TO_SIM"):
             self.MAX_NUM_AGENTS_TO_SIM = 4
         self.MAX_NUM_OTHER_AGENTS_IN_ENVIRONMENT = self.MAX_NUM_AGENTS_IN_ENVIRONMENT - 1
@@ -316,6 +316,7 @@ class DataGeneration(EvaluateConfig):
         self.ANIMATE_EPISODES = False
         self.PLOT_CIRCLES_ALONG_TRAJ = False
         self.PLT_LIMITS = [[-15, 15], [-15, 15]]
+        self.MAX_NUM_AGENTS_IN_ENVIRONMENT = 2
 
         self.NUM_TEST_CASES = 100
         self.NUM_AGENTS_TO_TEST = range(2,11)

@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 
-os.environ["GYM_CONFIG_CLASS"] = "DataGeneration"
+# os.environ["GYM_CONFIG_CLASS"] = "DataGeneration"
 import gym_collision_avoidance.envs.test_cases as tc
 from gym_collision_avoidance.envs import Config
 from gym_collision_avoidance.experiments.src.env_utils import (
@@ -80,7 +80,7 @@ def main():
     # num_agents_to_test = range(10,11)
     num_agents_to_test = [2]
     # num_agents_to_test = ['multi']
-    num_test_cases = 500
+    num_test_cases = 100
     policies = ['RVO']
 
     test_case_fn = tc.get_testcase_random
@@ -98,7 +98,6 @@ def main():
             'agents_sensors': ['other_agents_states'],
         }
     #######################################################################
-    env = create_env()
 
     print(
         "Running {test_cases} test cases for {num_agents} for policies:"
@@ -114,6 +113,10 @@ def main():
         * num_test_cases
     ) as pbar:
         for num_agents in num_agents_to_test:
+            Config.MAX_NUM_AGENTS_IN_ENVIRONMENT = num_agents
+            Config.MAX_NUM_OTHER_AGENTS_IN_ENVIRONMENT = num_agents - 1
+            Config.setup_obs()
+            env = create_env()
             for policy in policies:
                 env.set_plot_save_dir(
                 os.path.dirname(os.path.realpath(__file__))
