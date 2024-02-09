@@ -78,9 +78,9 @@ def main():
 
     # Data Gen params
     # num_agents_to_test = range(10,11)
-    num_agents_to_test = [2]
+    num_agents_to_test = [Config.MAX_NUM_AGENTS_IN_ENVIRONMENT]
     # num_agents_to_test = ['multi']
-    num_test_cases = 100
+    num_test_cases = 5000
     policies = ['RVO']
 
     test_case_fn = tc.get_testcase_random

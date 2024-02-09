@@ -67,7 +67,7 @@ class Config(object):
         }
 
         if not hasattr(self, "MAX_NUM_AGENTS_IN_ENVIRONMENT"):
-            self.MAX_NUM_AGENTS_IN_ENVIRONMENT = 2
+            self.MAX_NUM_AGENTS_IN_ENVIRONMENT = 2              # <------------------------------ MAX NUM AGENTS
         if not hasattr(self, "MAX_NUM_AGENTS_TO_SIM"):
             self.MAX_NUM_AGENTS_TO_SIM = 4
         self.MAX_NUM_OTHER_AGENTS_IN_ENVIRONMENT = self.MAX_NUM_AGENTS_IN_ENVIRONMENT - 1
