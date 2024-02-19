@@ -79,11 +79,9 @@ policy_dict = {
 
 # pypi version of pkg doesn't have RVO installed
 try:
-    print('Trying RVO')
     from gym_collision_avoidance.envs.policies.RVOPolicy import RVOPolicy
 
     policy_dict["RVO"] = RVOPolicy
-    print('RVO found.')
 except ModuleNotFoundError:
     print('FAILED RVO')
     print('Do you need to activate an environment?')
