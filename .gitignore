@@ -14,7 +14,7 @@ venv*/
 
 .vscode
 
-DATA/
+DATA/*.png
 
 venv
 log
