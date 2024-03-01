@@ -40,7 +40,7 @@ class MultiagentFlattenDictWrapper(gym.ObservationWrapper):
             self.observation_indices[agent] = {}
             agent_lower_ind = size
             for key in dict_keys:
-                shape = self.env.observation_space.spaces[key].shape
+                shape = self.env.observation_space.spaces[0][key].shape
                 prev_size = size
                 size += np.prod(shape)
                 self.observation_indices[agent][key] = [prev_size, size]
