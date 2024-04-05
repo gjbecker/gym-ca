@@ -1,0 +1,37 @@
+
+[34m[1mwandb[39m[22m: [33mWARNING[39m Symlinked 0 file into the W&B run directory, call wandb.save again to sync new files.
+[Server] Loading Regression Model then training RL.
+[NetworkVPCore] Loading checkpoint file: /work/flemingc/gjbecker/rl_collision_avoidance/ga3c/GA3C/checkpoints/regression/wandb/run-rnn/checkpoints/network_00000000
+removed agent... 31 left
+removed agent... 30 left
+removed agent... 29 left
+removed agent... 28 left
+removed agent... 27 left
+removed agent... 26 left
+removed agent... 25 left
+removed agent... 24 left
+removed agent... 23 left
+removed agent... 22 left
+removed agent... 21 left
+removed agent... 20 left
+removed agent... 19 left
+removed agent... 18 left
+removed agent... 17 left
+removed agent... 16 left
+removed agent... 15 left
+removed agent... 14 left
+removed agent... 13 left
+removed agent... 12 left
+removed agent... 11 left
+removed agent... 10 left
+removed agent... 9 left
+removed agent... 8 left
+removed agent... 7 left
+removed agent... 6 left
+removed agent... 5 left
+removed agent... 4 left
+removed agent... 3 left
+removed agent... 2 left
+removed agent... 1 left
+removed agent... 0 left
+all done.
