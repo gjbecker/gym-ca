@@ -30,6 +30,7 @@ from gym_collision_avoidance.envs.visualize import (
     plot_episode,
 )
 
+from gym_collision_avoidance.envs.policies.GA3C_CADRL.network import Actions, Actions_Plus
 
 class CollisionAvoidanceEnv(gym.Env):
     """Gym Environment for multiagent collision avoidance
@@ -96,8 +97,9 @@ class CollisionAvoidanceEnv(gym.Env):
         self.action_space_type = Config.ACTION_SPACE_TYPE
 
         if self.action_space_type == Config.discrete:
+            self.actions = Config.ACTIONS
             self.action_space = gym.spaces.Discrete(
-                self.actions.num_actions, dtype=np.float32
+                self.actions.num_actions
             )
         elif self.action_space_type == Config.continuous:
             self.low_action = np.array(
@@ -573,7 +575,7 @@ class CollisionAvoidanceEnv(gym.Env):
     def _get_obs(self):
         """Update the map now that agents have moved, have each agent sense the world, and fill in their observations
 
-        Returns:
+        Returns: 
             observation (list): for each agent, a dictionary observation.
 
         """

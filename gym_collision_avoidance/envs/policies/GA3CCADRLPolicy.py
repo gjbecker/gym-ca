@@ -15,7 +15,7 @@ class GA3CCADRLPolicy(InternalPolicy):
     def __init__(self):
         InternalPolicy.__init__(self, str="GA3C_CADRL")
 
-        self.possible_actions = network.Actions()
+        self.possible_actions = Config.ACTIONS
         num_actions = self.possible_actions.num_actions
         self.device = '/cpu:0'
         self.nn = network.NetworkVP_rnn(self.device, 'network', num_actions)

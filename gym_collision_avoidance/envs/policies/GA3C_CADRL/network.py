@@ -15,6 +15,21 @@ class Actions():
         self.actions = np.vstack([self.actions,np.mgrid[0.0:0.1:0.5, -np.pi/6:np.pi/6+0.01:np.pi/6].reshape(2, -1).T])
         self.num_actions = len(self.actions)
 
+class Actions_Plus():
+    # Define 29 choices of actions to be:
+    # [v_pref,      [-pi/6, -pi/9, -pi/18, 0, pi/18, pi/9, pi/6]]
+    # [0.75*v_pref, [-pi/6, -pi/9, -pi/18, 0, pi/18, pi/9, pi/6]]
+    # [0.5*v_pref,  [-pi/6, -pi/12, 0, pi/12,  pi/6]]
+    # [0.25*v_pref, [-pi/6, -pi/12, 0, pi/12,  pi/6]]
+    # [0,           [-pi/6, -pi/12, 0, pi/12,  pi/6]]
+    def __init__(self):
+        self.actions = np.mgrid[1.0:1.1:0.5, -np.pi/6:np.pi/6+0.01:np.pi/18].reshape(2, -1).T
+        self.actions = np.vstack([self.actions,np.mgrid[0.75:0.8:0.75, -np.pi/6:np.pi/6+0.01:np.pi/18].reshape(2, -1).T])
+        self.actions = np.vstack([self.actions,np.mgrid[0.5:0.6:0.5, -np.pi/6:np.pi/6+0.01:np.pi/12].reshape(2, -1).T])
+        self.actions = np.vstack([self.actions,np.mgrid[0.25:0.3:0.25, -np.pi/6:np.pi/6+0.01:np.pi/12].reshape(2, -1).T])
+        self.actions = np.vstack([self.actions,np.mgrid[0.0:0.1:0.5, -np.pi/6:np.pi/6+0.01:np.pi/12].reshape(2, -1).T])
+        self.num_actions = len(self.actions)
+
 class NetworkVPCore(object):
     def __init__(self, device, model_name, num_actions):
         self.device = device
