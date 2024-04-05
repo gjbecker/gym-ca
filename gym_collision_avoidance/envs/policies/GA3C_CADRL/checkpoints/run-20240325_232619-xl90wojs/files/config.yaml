@@ -1,0 +1,377 @@
+wandb_version: 1
+
+_wandb:
+  desc: null
+  value:
+    python_version: 3.6.13
+    cli_version: 0.15.3
+    framework: tensorflow
+    is_jupyter_run: false
+    is_kaggle_kernel: false
+    start_time: 1711427179.721723
+    t:
+      1:
+      - 3
+      - 55
+      2:
+      - 3
+      - 55
+      3:
+      - 3
+      - 23
+      4: 3.6.13
+      5: 0.15.3
+      8:
+      - 5
+MAX_NUM_AGENTS_IN_ENVIRONMENT:
+  desc: null
+  value: 10
+MAX_NUM_AGENTS_TO_SIM:
+  desc: null
+  value: 10
+STATES_IN_OBS:
+  desc: null
+  value:
+  - is_learning
+  - num_other_agents
+  - dist_to_goal
+  - heading_ego_frame
+  - pref_speed
+  - radius
+  - other_agents_states
+STATES_NOT_USED_IN_POLICY:
+  desc: null
+  value:
+  - is_learning
+MULTI_AGENT_ARCH_RNN:
+  desc: null
+  value: 0
+MULTI_AGENT_ARCH_WEIGHT_SHARING:
+  desc: null
+  value: 1
+MULTI_AGENT_ARCH_LASERSCAN:
+  desc: null
+  value: 2
+MULTI_AGENT_ARCH:
+  desc: null
+  value: 0
+MAX_NUM_OTHER_AGENTS_OBSERVED:
+  desc: null
+  value: 9
+COLLISION_AVOIDANCE:
+  desc: null
+  value: true
+continuous:
+  desc: null
+  value: 0
+discrete:
+  desc: null
+  value: 1
+ACTION_SPACE_TYPE:
+  desc: null
+  value: 0
+ANIMATE_EPISODES:
+  desc: null
+  value: false
+SHOW_EPISODE_PLOTS:
+  desc: null
+  value: false
+SAVE_EPISODE_PLOTS:
+  desc: null
+  value: false
+PLOT_CIRCLES_ALONG_TRAJ:
+  desc: null
+  value: true
+ANIMATION_PERIOD_STEPS:
+  desc: null
+  value: 5
+PLT_FIG_SIZE:
+  desc: null
+  value:
+  - 10
+  - 8
+USE_STATIC_MAP:
+  desc: null
+  value: false
+TRAIN_MODE:
+  desc: null
+  value: true
+PLAY_MODE:
+  desc: null
+  value: false
+EVALUATE_MODE:
+  desc: null
+  value: false
+REWARD_AT_GOAL:
+  desc: null
+  value: 1.0
+REWARD_COLLISION_WITH_AGENT:
+  desc: null
+  value: -0.25
+REWARD_COLLISION_WITH_WALL:
+  desc: null
+  value: -0.25
+REWARD_GETTING_CLOSE:
+  desc: null
+  value: -0.1
+REWARD_ENTERED_NORM_ZONE:
+  desc: null
+  value: -0.05
+REWARD_TIME_STEP:
+  desc: null
+  value: 0.0
+REWARD_WIGGLY_BEHAVIOR:
+  desc: null
+  value: 0.0
+WIGGLY_BEHAVIOR_THRESHOLD:
+  desc: null
+  value: .inf
+COLLISION_DIST:
+  desc: null
+  value: 0.0
+GETTING_CLOSE_RANGE:
+  desc: null
+  value: 0.2
+SOCIAL_NORMS:
+  desc: null
+  value: none
+DT:
+  desc: null
+  value: 0.2
+NEAR_GOAL_THRESHOLD:
+  desc: null
+  value: 0.2
+MAX_TIME_RATIO:
+  desc: null
+  value: 2.0
+TEST_CASE_FN:
+  desc: null
+  value: get_testcase_random
+MAX_NUM_OTHER_AGENTS_IN_ENVIRONMENT:
+  desc: null
+  value: 9
+PLOT_EVERY_N_EPISODES:
+  desc: null
+  value: 100
+SENSING_HORIZON:
+  desc: null
+  value: .inf
+LASERSCAN_LENGTH:
+  desc: null
+  value: 512
+LASERSCAN_NUM_PAST:
+  desc: null
+  value: 3
+NUM_STEPS_IN_OBS_HISTORY:
+  desc: null
+  value: 1
+NUM_PAST_ACTIONS_IN_STATE:
+  desc: null
+  value: 0
+RVO_TIME_HORIZON:
+  desc: null
+  value: 5.0
+RVO_COLLAB_COEFF:
+  desc: null
+  value: 0.5
+RVO_ANTI_COLLAB_T:
+  desc: null
+  value: 1.0
+TRAIN_SINGLE_AGENT:
+  desc: null
+  value: false
+AGENT_SORTING_METHOD:
+  desc: null
+  value: closest_first
+game_grid:
+  desc: null
+  value: 0
+game_ale:
+  desc: null
+  value: 1
+game_collision_avoidance:
+  desc: null
+  value: 2
+GAME_CHOICE:
+  desc: null
+  value: 2
+USE_WANDB:
+  desc: null
+  value: true
+WANDB_PROJECT_NAME:
+  desc: null
+  value: ga3c_cadrl
+DEBUG:
+  desc: null
+  value: false
+RANDOM_SEED_1000:
+  desc: null
+  value: 0
+USE_IMAGE:
+  desc: null
+  value: false
+FIRST_STATE_INDEX:
+  desc: null
+  value: 1
+HOST_AGENT_OBSERVATION_LENGTH:
+  desc: null
+  value: 4
+OTHER_AGENT_OBSERVATION_LENGTH:
+  desc: null
+  value: 7
+OTHER_AGENT_FULL_OBSERVATION_LENGTH:
+  desc: null
+  value: 7
+HOST_AGENT_STATE_SIZE:
+  desc: null
+  value: 4
+NUM_ACTIONS:
+  desc: null
+  value: 11
+LOAD_RL_THEN_TRAIN_RL:
+  desc: null
+  value: 0
+TRAIN_ONLY_REGRESSION:
+  desc: null
+  value: 1
+LOAD_REGRESSION_THEN_TRAIN_RL:
+  desc: null
+  value: 2
+NET_ARCH:
+  desc: null
+  value: NetworkVP_rnn
+ALL_ARCHS:
+  desc: null
+  value:
+  - NetworkVP_rnn
+NORMALIZE_INPUT:
+  desc: null
+  value: true
+USE_DROPOUT:
+  desc: null
+  value: false
+USE_REGULARIZATION:
+  desc: null
+  value: true
+AGENTS:
+  desc: null
+  value: 32
+PREDICTORS:
+  desc: null
+  value: 2
+TRAINERS:
+  desc: null
+  value: 2
+DEVICE:
+  desc: null
+  value: gpu:0
+DYNAMIC_SETTINGS:
+  desc: null
+  value: false
+DYNAMIC_SETTINGS_STEP_WAIT:
+  desc: null
+  value: 20
+DYNAMIC_SETTINGS_INITIAL_WAIT:
+  desc: null
+  value: 10
+DISCOUNT:
+  desc: null
+  value: 0.97
+TIME_MAX:
+  desc: null
+  value: 20
+MAX_QUEUE_SIZE:
+  desc: null
+  value: 100
+PREDICTION_BATCH_SIZE:
+  desc: null
+  value: 128
+MIN_POLICY:
+  desc: null
+  value: 0.0
+OPT_RMSPROP:
+  desc: null
+  value: 0
+OPT_ADAM:
+  desc: null
+  value: 1
+OPTIMIZER:
+  desc: null
+  value: 1
+LEARNING_RATE_RL_START:
+  desc: null
+  value: 2.0e-05
+LEARNING_RATE_RL_END:
+  desc: null
+  value: 2.0e-05
+RMSPROP_DECAY:
+  desc: null
+  value: 0.99
+RMSPROP_MOMENTUM:
+  desc: null
+  value: 0.0
+RMSPROP_EPSILON:
+  desc: null
+  value: 0.1
+BETA_START:
+  desc: null
+  value: 0.0001
+BETA_END:
+  desc: null
+  value: 0.0001
+USE_GRAD_CLIP:
+  desc: null
+  value: false
+GRAD_CLIP_NORM:
+  desc: null
+  value: 40.0
+LOG_EPSILON:
+  desc: null
+  value: 1.0e-06
+TRAINING_MIN_BATCH_SIZE:
+  desc: null
+  value: 100
+TENSORBOARD:
+  desc: null
+  value: true
+TENSORBOARD_UPDATE_FREQUENCY:
+  desc: null
+  value: 100
+SAVE_MODELS:
+  desc: null
+  value: true
+SAVE_FREQUENCY:
+  desc: null
+  value: 50000
+SPECIAL_EPISODES_TO_SAVE:
+  desc: null
+  value:
+  - 1990000
+  - 2000000
+PRINT_STATS_FREQUENCY:
+  desc: null
+  value: 10
+STAT_ROLLING_MEAN_WINDOW:
+  desc: null
+  value: 1000
+RESULTS_FILENAME:
+  desc: null
+  value: results.txt
+NETWORK_NAME:
+  desc: null
+  value: network
+EPISODES:
+  desc: null
+  value: 2000000
+ANNEALING_EPISODE_COUNT:
+  desc: null
+  value: 2000000
+TRAIN_VERSION:
+  desc: null
+  value: 0
+LOAD_FROM_WANDB_RUN_ID:
+  desc: null
+  value: run-20240322_114351-opn3hmir/files
+EPISODE_NUMBER_TO_LOAD:
+  desc: null
+  value: 1490001
