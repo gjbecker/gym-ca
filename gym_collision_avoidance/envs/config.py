@@ -8,13 +8,9 @@ class Config(object):
         self.D4RL = True
         self.COLLISION_AVOIDANCE = True
         self.continuous, self.discrete = range(2) # Initialize game types as enum
-<<<<<<< Updated upstream
-        self.ACTION_SPACE_TYPE   = self.continuous 
-=======
         self.ACTION_SPACE_TYPE   = self.continuous
         self.ACTIONS = None
         self.STATES_NOT_USED_IN_POLICY = ['is_learning']
->>>>>>> Stashed changes
 
         ### DISPLAY
         self.ANIMATE_EPISODES    = False
@@ -73,11 +69,7 @@ class Config(object):
         }
 
         if not hasattr(self, "MAX_NUM_AGENTS_IN_ENVIRONMENT"):
-<<<<<<< Updated upstream
-            self.MAX_NUM_AGENTS_IN_ENVIRONMENT = 2             # <------------------------------ MAX NUM AGENTS
-=======
             self.MAX_NUM_AGENTS_IN_ENVIRONMENT = 4              # <------------------------------ MAX NUM AGENTS
->>>>>>> Stashed changes
         if not hasattr(self, "MAX_NUM_AGENTS_TO_SIM"):
             self.MAX_NUM_AGENTS_TO_SIM = 4
         self.MAX_NUM_OTHER_AGENTS_IN_ENVIRONMENT = self.MAX_NUM_AGENTS_IN_ENVIRONMENT - 1
@@ -104,9 +96,6 @@ class Config(object):
         self.STORE_HISTORY = True
 
         ### OBSERVATION VECTOR
-<<<<<<< Updated upstream
-        self.TRAIN_SINGLE_AGENT = True
-=======
         self.TRAIN_SINGLE_AGENT = False
         self.setup_obs()
     
@@ -115,7 +104,6 @@ class Config(object):
         # self.AGENT_SORTING_METHOD = "time_to_impact"
 
     def setup_obs(self):
->>>>>>> Stashed changes
         self.STATE_INFO_DICT = {
             'dist_to_goal': {
                 'dtype': np.float32, 
