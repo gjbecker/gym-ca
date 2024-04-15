@@ -10,7 +10,9 @@ class Config(object):
         self.continuous, self.discrete = range(2) # Initialize game types as enum
         self.ACTION_SPACE_TYPE   = self.continuous
         self.ACTIONS = None
+        self.STATES_IN_OBS = ['num_other_agents', 'dist_to_goal', 'heading_ego_frame', 'pref_speed', 'radius', 'other_agents_states']
         self.STATES_NOT_USED_IN_POLICY = ['is_learning']
+        self.TRAIN_SINGLE_AGENT = False
 
         ### DISPLAY
         self.ANIMATE_EPISODES    = False
@@ -96,7 +98,6 @@ class Config(object):
         self.STORE_HISTORY = True
 
         ### OBSERVATION VECTOR
-        self.TRAIN_SINGLE_AGENT = False
         self.setup_obs()
     
         # self.AGENT_SORTING_METHOD = "closest_last"
