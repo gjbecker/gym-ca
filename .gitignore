@@ -17,6 +17,7 @@ venv*/
 DATA/
 GA3C/**/*.png
 GA3C/**/*.jpg
+GA3C/**/*.pkl
 
 venv
 log
