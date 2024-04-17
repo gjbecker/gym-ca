@@ -18,6 +18,7 @@ NUM_AGENTS = 4
 SAMPLE_TARGET = 1e6
 POLICIES = 'GA3C_CADRL'
 SAVE = True
+DATASET = 'medium'
 
 checkpt_dir = 'run-20240322_114351-opn3hmir/files/checkpoints'
 # checkpt_name = 'network_01000001'
@@ -43,7 +44,7 @@ env.set_plot_save_dir(save_dir + 'figs/')
 
 ep = samples = total_reward = ep_len = 0
 
-O, CA, DA, R, T = [{x:[] for x in range(NUM_AGENTS)} for _ in range(5)]
+O, NO, CA, DA, R, T = [{x:[] for x in range(NUM_AGENTS)} for _ in range(6)]
 results = dict()
 
 while samples < SAMPLE_TARGET:
@@ -56,6 +57,7 @@ while samples < SAMPLE_TARGET:
     ]
     env.set_agents(agents)
     obs, _ = env.reset()
+    obs = obs[1:]
     env.unwrapped.test_case_index = ep
     ep += 1
     step = 0
@@ -63,13 +65,15 @@ while samples < SAMPLE_TARGET:
     ### Run an episode
     while not terminated:
         next_obs, rew, terminated, _, info = env.step([None])   # Get actions from network
+        next_obs = next_obs[1:]
         dones = info['which_agents_done']    
-        
+        ### Obs does not include is_learning[]
         for i, agent in enumerate(env.agents):
             if dones[i] == True and step == 0:
                 samples+=1
                 T[i].extend([dones[i]])
                 O[i].extend([obs[i]])
+                NO[i].extend([next_obs[i]])
                 R[i].extend([rew[i]])
                 CA[i].extend([agent.past_actions[0]])
                 for j,a in enumerate(actions):
@@ -81,6 +85,7 @@ while samples < SAMPLE_TARGET:
                 samples+=1
                 T[i].extend([dones[i]])
                 O[i].extend([obs[i]])
+                NO[i].extend([next_obs[i]])
                 R[i].extend([rew[i]])
                 CA[i].extend([agent.past_actions[0]])
                 for j,a in enumerate(actions):
@@ -100,23 +105,23 @@ while samples < SAMPLE_TARGET:
         )
     env.reset()
 
-O_ = np.array(O[0]); R_ = np.array(R[0]); T_ = np.array(T[0]); CA_ = np.array(CA[0]); DA_ = np.array(DA[0])
+O_ = np.array(O[0]); NO_ = np.array(NO[0]); R_ = np.array(R[0]); T_ = np.array(T[0]); CA_ = np.array(CA[0]); DA_ = np.array(DA[0])
 
 for i in range(1, NUM_AGENTS):
-    O_ = np.concatenate((O_, O[i])); R_ = np.concatenate((R_, R[i])); T_ = np.concatenate((T_, T[i]))
-    CA_ = np.concatenate((CA_, CA[i])); DA_ = np.concatenate((DA_, DA[i]))
+    O_ = np.concatenate((O_, O[i])); NO_ = np.concatenate((NO_, NO[i])); R_ = np.concatenate((R_, R[i])); 
+    T_ = np.concatenate((T_, T[i])); CA_ = np.concatenate((CA_, CA[i])); DA_ = np.concatenate((DA_, DA[i]))
 
 # print(O_.shape,R_.shape,T_.shape, CA_.shape, DA_.shape)
 
 results['observations'] = O_
+results['next_observations'] = NO_
 results['rewards'] = R_
 results['terminals'] = T_
 results['c_actions'] = CA_
 results['d_actions'] = DA_
 
-filename = save_dir + 'dataset.hdf5'
-
 if SAVE:
+    filename = save_dir + f'{DATASET}-{checkpt_name[-8:]}.hdf5'
     file = h5py.File(filename, 'w')
     for name in results:  
         file.create_dataset(name, data=results[name], compression='gzip')
