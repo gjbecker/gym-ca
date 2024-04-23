@@ -661,6 +661,8 @@ class CollisionAvoidanceEnv(gym.Env):
         self.test_case_fn = test_case_fn
         self.test_case_args = test_case_args
 
+    def get_normalized_score(self, score):
+        return score
 
 if __name__ == "__main__":
     print("See example.py for a minimum working example.")
