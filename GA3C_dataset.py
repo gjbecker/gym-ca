@@ -1,6 +1,7 @@
 import os, sys
 import gym, h5py
 import numpy as np
+import random
 np.set_printoptions(precision=3)
 import logging, datetime
 
@@ -12,23 +13,27 @@ from gym_collision_avoidance.envs import Config
 from gym_collision_avoidance.experiments.src.env_utils import create_env, run_episode
 from gym_collision_avoidance.envs import test_cases as tc
 from gym_collision_avoidance.envs.policies.GA3C_CADRL.network import Actions, Actions_Plus
+from GA3C_config import GA3C_config
 
 start = datetime.datetime.now()
-NUM_AGENTS = 4
+# NUM_AGENTS = list(range(2,4+1))
+NUM_AGENTS = [4]
+NUM_ACTIONS = 11
+DATASET = 'medium'
 SAMPLE_TARGET = 1e6
 POLICIES = 'GA3C_CADRL'
+RADIUS_BNDS = [0.5, 0.5]
 SAVE = True
-DATASET = 'medium'
 
-checkpt_dir = 'run-20240322_114351-opn3hmir/files/checkpoints'
-# checkpt_name = 'network_01000001'
-checkpt_name = 'network_00200000'
+
+checkpt_dir = GA3C_config[NUM_ACTIONS][DATASET]['checkpt_dir']
+checkpt_name = GA3C_config[NUM_ACTIONS][DATASET]['checkpt_name']
 Config.ACTION_SPACE_TYPE = Config.discrete
-Config.ACTIONS = Actions()
+Config.ACTIONS = GA3C_config[NUM_ACTIONS]['Actions']
 actions = Config.ACTIONS.actions
-Config.MAX_NUM_AGENTS_IN_ENVIRONMENT = NUM_AGENTS
-Config.MAX_NUM_AGENTS_TO_SIM = NUM_AGENTS
-Config.MAX_NUM_OTHER_AGENTS_OBSERVED = NUM_AGENTS - 1
+Config.MAX_NUM_AGENTS_IN_ENVIRONMENT = NUM_AGENTS[-1]
+Config.MAX_NUM_AGENTS_TO_SIM = NUM_AGENTS[-1]
+Config.MAX_NUM_OTHER_AGENTS_OBSERVED = NUM_AGENTS[-1] - 1
 Config.SAVE_EPISODE_PLOTS = False
 Config.TRAIN_SINGLE_AGENT = False
 Config.setup_obs()
@@ -38,18 +43,26 @@ env = create_env()
 print(f'\nNUM AGENTS: {NUM_AGENTS}    |   POLICY: {POLICIES}   |   SAMPLE TARGET: {SAMPLE_TARGET:,.0f}')
 print(f'OBS: {env.observation_space}   |   ACT: {env.action_space}\n\n{"="*140}')
 
-save_dir = os.path.dirname(os.path.realpath(__file__)) + f'/GA3C/{NUM_AGENTS}_agent_{Config.ACTIONS.num_actions}_actions/'
+### Configure directory for saving plots and dataset ###
+if len(NUM_AGENTS) == 1:
+    save_dir = os.path.dirname(os.path.realpath(__file__)) + f'/GA3C/{NUM_AGENTS[-1]}_agent_{Config.ACTIONS.num_actions}_actions/'
+else:
+    save_dir = os.path.dirname(os.path.realpath(__file__)) + f'/GA3C/{NUM_AGENTS[0]}-{NUM_AGENTS[-1]}_agent_{Config.ACTIONS.num_actions}_actions/'
 env.unwrapped.plot_policy_name = 'GA3C'
 env.set_plot_save_dir(save_dir + 'figs/')
 
-ep = samples = total_reward = ep_len = 0
-
-O, NO, CA, DA, R, T = [{x:[] for x in range(NUM_AGENTS)} for _ in range(6)]
+ep = samples = total_reward = ep_len = agent_count = 0
+O, NO, CA, DA, R, T = [{x:[] for x in range(NUM_AGENTS[-1])} for _ in range(6)]
 results = dict()
 
 while samples < SAMPLE_TARGET:
-    ### Get agents, initialize policy network (GA3C), set to env
-    agents = tc.get_testcase_random(num_agents=NUM_AGENTS, policies=POLICIES)
+    ### Get agents, initialize policy network (GA3C), set to env ###
+    if len(NUM_AGENTS) > 1:
+        num_agents = random.sample(NUM_AGENTS, 1)[0]
+        agents = tc.get_testcase_random(num_agents=num_agents, policies=POLICIES, radius_bnds=RADIUS_BNDS)
+    else:
+        num_agents = NUM_AGENTS[-1]
+        agents = tc.get_testcase_random(num_agents=num_agents, policies=POLICIES, radius_bnds=RADIUS_BNDS)
     [
         agent.policy.initialize_network(checkpt_dir=checkpt_dir, checkpt_name=checkpt_name)
         for agent in agents
@@ -57,7 +70,7 @@ while samples < SAMPLE_TARGET:
     ]
     env.set_agents(agents)
     obs, _ = env.reset()
-    obs = obs[1:]
+
     env.unwrapped.test_case_index = ep
     ep += 1
     step = 0
@@ -65,10 +78,10 @@ while samples < SAMPLE_TARGET:
     ### Run an episode
     while not terminated:
         next_obs, rew, terminated, _, info = env.step([None])   # Get actions from network
-        next_obs = next_obs[1:]
         dones = info['which_agents_done']    
-        ### Obs does not include is_learning[]
-        for i, agent in enumerate(env.agents):
+
+        for i in range(num_agents):
+            agent = env.agents[i]
             if dones[i] == True and step == 0:
                 samples+=1
                 T[i].extend([dones[i]])
@@ -95,19 +108,22 @@ while samples < SAMPLE_TARGET:
                         break
 
         step+=1
-        total_reward += rew
+        total_reward += np.sum(rew)
         obs = next_obs
+
+    agent_count += num_agents
     ep_len += step
     if ep % 5 == 0:
         print(
-        f'|    EP: {ep:4d}    ||    AVG LENGTH: {ep_len/ep:.0f}    ||    AVG REWARD: {np.sum(total_reward)/(NUM_AGENTS*ep): .2f}    |'
+        f'|    EP: {ep:4d}    ||    AVG LENGTH: {ep_len/ep:.0f}    ||    AVG REWARD: {total_reward/agent_count: .2f}    |'
         f'|    SAMPLES: {samples:7d}    ||    PROGRESS: {(samples/SAMPLE_TARGET):4.2%}    |    {datetime.datetime.now()-start}    |'
         )
     env.reset()
 
+### Flatten dataset ###
 O_ = np.array(O[0]); NO_ = np.array(NO[0]); R_ = np.array(R[0]); T_ = np.array(T[0]); CA_ = np.array(CA[0]); DA_ = np.array(DA[0])
 
-for i in range(1, NUM_AGENTS):
+for i in range(1, NUM_AGENTS[-1]):
     O_ = np.concatenate((O_, O[i])); NO_ = np.concatenate((NO_, NO[i])); R_ = np.concatenate((R_, R[i])); 
     T_ = np.concatenate((T_, T[i])); CA_ = np.concatenate((CA_, CA[i])); DA_ = np.concatenate((DA_, DA[i]))
 
@@ -121,7 +137,7 @@ results['c_actions'] = CA_
 results['d_actions'] = DA_
 
 if SAVE:
-    filename = save_dir + f'{DATASET}-{checkpt_name[-8:]}.hdf5'
+    filename = save_dir + f'{DATASET}.hdf5'
     file = h5py.File(filename, 'w')
     for name in results:  
         file.create_dataset(name, data=results[name], compression='gzip')
