@@ -1,4 +1,5 @@
 import numpy as np
+from gym_collision_avoidance.envs.policies.GA3C_CADRL.network import Actions, Actions_Plus
 
 class Config(object): 
     def __init__(self):
@@ -9,7 +10,7 @@ class Config(object):
         self.COLLISION_AVOIDANCE = True
         self.continuous, self.discrete = range(2) # Initialize game types as enum
         self.ACTION_SPACE_TYPE   = self.continuous
-        self.ACTIONS = None
+        self.ACTIONS = Actions()
         self.STATES_IN_OBS = ['num_other_agents', 'dist_to_goal', 'heading_ego_frame', 'pref_speed', 'radius', 'other_agents_states']
         self.STATES_NOT_USED_IN_POLICY = ['is_learning']
         self.TRAIN_SINGLE_AGENT = False
