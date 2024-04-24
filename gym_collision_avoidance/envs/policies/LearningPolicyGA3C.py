@@ -2,13 +2,14 @@ import numpy as np
 
 from gym_collision_avoidance.envs.policies.LearningPolicy import LearningPolicy
 from gym_collision_avoidance.envs.policies.GA3C_CADRL import network
+from gym_collision_avoidance.envs.config import Config
 
 class LearningPolicyGA3C(LearningPolicy):
     """ The GA3C-CADRL policy while it's still being trained (an external process provides a discrete action input)
     """
     def __init__(self):
         LearningPolicy.__init__(self)
-        self.possible_actions = network.Actions()
+        self.possible_actions = Config.ACTIONS
 
     def external_action_to_action(self, agent, external_action):
         """ Convert the discrete external_action into an action for this environment using properties about the agent.
