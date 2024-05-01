@@ -18,8 +18,8 @@ from GA3C_config import GA3C_config
 start = datetime.datetime.now()
 # NUM_AGENTS = list(range(2,4+1))
 NUM_AGENTS = [4]
-NUM_ACTIONS = 11
-DATASET = 'medium'
+NUM_ACTIONS = 29
+DATASET = 'expert'
 SAMPLE_TARGET = 1e6
 POLICIES = 'GA3C_CADRL'
 RADIUS_BNDS = [0.5, 0.5]
@@ -40,7 +40,7 @@ Config.setup_obs()
 
 env = create_env()
 
-print(f'\nNUM AGENTS: {NUM_AGENTS}    |   POLICY: {POLICIES}   |   SAMPLE TARGET: {SAMPLE_TARGET:,.0f}')
+print(f'\nNUM AGENTS: {NUM_AGENTS}    |   POLICY: {POLICIES} - {DATASET}   |   SAMPLE TARGET: {SAMPLE_TARGET:,.0f}')
 print(f'OBS: {env.observation_space}   |   ACT: {env.action_space}\n\n{"="*140}')
 
 ### Configure directory for saving plots and dataset ###
@@ -88,11 +88,13 @@ while samples < SAMPLE_TARGET:
                 O[i].extend([obs[i]])
                 NO[i].extend([next_obs[i]])
                 R[i].extend([rew[i]])
-                CA[i].extend([agent.past_actions[0]])
-                for j,a in enumerate(actions):
-                    if np.allclose(a, agent.past_actions[0]/[obs[i][4], 1]):
-                        DA[i].extend([j])
-                        break
+                CA[i].extend([agent.past_actions[0]])     
+                DA[i].extend([agent.policy.last_action_idx])           
+                # print('\n',agent.past_actions[0], obs[i][3], agent.policy.last_action_idx, actions[agent.policy.last_action_idx])
+                # for j,a in enumerate(actions):
+                #     if np.allclose(a, agent.past_actions[0]/[obs[i][3], 1]): # PREF_SPEED 4th element in obs
+                #         DA[i].extend([j])
+                #         break
 
             elif dones[i] == False or dones[i] != T[i][-1]:
                 samples+=1
@@ -101,11 +103,13 @@ while samples < SAMPLE_TARGET:
                 NO[i].extend([next_obs[i]])
                 R[i].extend([rew[i]])
                 CA[i].extend([agent.past_actions[0]])
-                for j,a in enumerate(actions):
-                    if np.allclose(a, agent.past_actions[0]/[obs[i][4], 1]):
-                        # print(i, agent.past_actions[0]/[obs[i][4], 1], Actions_Plus().actions[j], a)
-                        DA[i].extend([j])
-                        break
+                DA[i].extend([agent.policy.last_action_idx])  
+                # print(agent.past_actions[0], obs[i][3], agent.policy.last_action_idx, actions[agent.policy.last_action_idx])
+                # for j,a in enumerate(actions):
+                #     if np.allclose(a, agent.past_actions[0]/[obs[i][3], 1]):
+                #         # print(i, agent.past_actions[0]/[obs[i][3], 1], Actions_Plus().actions[j], a)
+                #         DA[i].extend([j])
+                #         break
 
         step+=1
         total_reward += np.sum(rew)
@@ -128,6 +132,7 @@ for i in range(1, NUM_AGENTS[-1]):
     T_ = np.concatenate((T_, T[i])); CA_ = np.concatenate((CA_, CA[i])); DA_ = np.concatenate((DA_, DA[i]))
 
 # print(O_.shape,R_.shape,T_.shape, CA_.shape, DA_.shape)
+print(f'CA: {CA_.shape} | DA: {DA_.shape}')
 
 results['observations'] = O_
 results['next_observations'] = NO_

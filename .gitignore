@@ -15,9 +15,7 @@ venv*/
 .vscode
 
 DATA/
-GA3C/**/*.png
-GA3C/**/*.jpg
-GA3C/**/*.pkl
+GA3C/
 
 venv
 log

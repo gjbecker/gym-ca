@@ -19,6 +19,7 @@ class GA3CCADRLPolicy(InternalPolicy):
         num_actions = self.possible_actions.num_actions
         self.device = '/cpu:0'
         self.nn = network.NetworkVP_rnn(self.device, 'network', num_actions)
+        self.last_action_idx = None
 
     def initialize_network(self, **kwargs):
         """ Load the model parameters of either a default file, or if provided through kwargs, a specific path and/or tensorflow checkpoint.
@@ -79,6 +80,7 @@ class GA3CCADRLPolicy(InternalPolicy):
 
         predictions = self.nn.predict_p(vec_obs)[0]
         action_index = np.argmax(predictions)
+        self.last_action_idx = action_index
         raw_action = self.possible_actions.actions[action_index]
         action = np.array([pref_speed*raw_action[0], raw_action[1]])
         return action

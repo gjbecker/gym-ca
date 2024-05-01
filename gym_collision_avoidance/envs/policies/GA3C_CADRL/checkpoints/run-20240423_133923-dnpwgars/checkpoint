@@ -1,0 +1,2 @@
+model_checkpoint_path: "/work/flemingc/gjbecker/rl_collision_avoidance/ga3c/GA3C/checkpoints/RL/wandb/run-20240423_133923-dnpwgars/files/checkpoints/network_00350000"
+all_model_checkpoint_paths: "/work/flemingc/gjbecker/rl_collision_avoidance/ga3c/GA3C/checkpoints/RL/wandb/run-20240423_133923-dnpwgars/files/checkpoints/network_00350000"
