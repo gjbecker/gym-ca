@@ -32,6 +32,7 @@ from gym_collision_avoidance.envs.dynamics.UnicycleDynamicsMaxTurnRate import (
 from gym_collision_avoidance.envs.policies.CADRL.scripts.multi import (
     gen_rand_testcases as tc,
 )
+# Policies
 from gym_collision_avoidance.envs.policies.CADRLPolicy import CADRLPolicy
 from gym_collision_avoidance.envs.policies.CARRLPolicy import CARRLPolicy
 from gym_collision_avoidance.envs.policies.ExternalPolicy import ExternalPolicy
@@ -45,13 +46,13 @@ from gym_collision_avoidance.envs.policies.LearningPolicyGA3C import (
 from gym_collision_avoidance.envs.policies.NonCooperativePolicy import (
     NonCooperativePolicy,
 )
-
-# Policies
 from gym_collision_avoidance.envs.policies.StaticPolicy import StaticPolicy
 from gym_collision_avoidance.envs.sensors.LaserScanSensor import (
     LaserScanSensor,
 )
 from gym_collision_avoidance.envs.policies.RandomPolicy import RandomPolicy
+from gym_collision_avoidance.envs.policies.DTPolicy import DTPolicy
+# from gym_collision_avoidance.envs.policies.DRLLongPolicy import DRLLongPolicy
 # Sensors
 from gym_collision_avoidance.envs.sensors.OccupancyGridSensor import (
     OccupancyGridSensor,
@@ -59,9 +60,6 @@ from gym_collision_avoidance.envs.sensors.OccupancyGridSensor import (
 from gym_collision_avoidance.envs.sensors.OtherAgentsStatesSensor import (
     OtherAgentsStatesSensor,
 )
-
-# from gym_collision_avoidance.envs.policies.DRLLongPolicy import DRLLongPolicy
-
 
 test_case_filename = "{dir}/test_cases/{pref_speed_string}{num_agents}_agents_{num_test_cases}_cases.p"
 
@@ -74,7 +72,8 @@ policy_dict = {
     "learning_ga3c": LearningPolicyGA3C,
     "static": StaticPolicy,
     "CADRL": CADRLPolicy,
-    "random": RandomPolicy
+    "random": RandomPolicy,
+    'DT': DTPolicy
 }
 
 # pypi version of pkg doesn't have RVO installed
