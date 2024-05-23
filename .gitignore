@@ -16,6 +16,7 @@ venv*/
 
 DATA/
 GA3C/
+TEST/
 
 venv
 log

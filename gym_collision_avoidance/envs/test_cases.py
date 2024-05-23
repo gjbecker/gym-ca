@@ -51,7 +51,7 @@ from gym_collision_avoidance.envs.sensors.LaserScanSensor import (
     LaserScanSensor,
 )
 from gym_collision_avoidance.envs.policies.RandomPolicy import RandomPolicy
-from gym_collision_avoidance.envs.policies.DTPolicy import DTPolicy
+
 # from gym_collision_avoidance.envs.policies.DRLLongPolicy import DRLLongPolicy
 # Sensors
 from gym_collision_avoidance.envs.sensors.OccupancyGridSensor import (
@@ -73,8 +73,13 @@ policy_dict = {
     "static": StaticPolicy,
     "CADRL": CADRLPolicy,
     "random": RandomPolicy,
-    'DT': DTPolicy
 }
+
+try:
+    from gym_collision_avoidance.envs.policies.DTPolicy import DTPolicy
+    policy_dict['DT'] = DTPolicy
+except:
+    pass
 
 # pypi version of pkg doesn't have RVO installed
 try:

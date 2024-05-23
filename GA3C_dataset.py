@@ -16,9 +16,9 @@ from gym_collision_avoidance.envs.policies.GA3C_CADRL.network import Actions, Ac
 from GA3C_config import GA3C_config
 
 start = datetime.datetime.now()
-# NUM_AGENTS = list(range(2,4+1))
-NUM_AGENTS = [4]
-NUM_ACTIONS = 29
+NUM_AGENTS = list(range(2,4+1))
+# NUM_AGENTS = [4]
+NUM_ACTIONS = 11
 DATASET = 'expert'
 SAMPLE_TARGET = 1e6
 POLICIES = 'GA3C_CADRL'
@@ -90,11 +90,6 @@ while samples < SAMPLE_TARGET:
                 R[i].extend([rew[i]])
                 CA[i].extend([agent.past_actions[0]])     
                 DA[i].extend([agent.policy.last_action_idx])           
-                # print('\n',agent.past_actions[0], obs[i][3], agent.policy.last_action_idx, actions[agent.policy.last_action_idx])
-                # for j,a in enumerate(actions):
-                #     if np.allclose(a, agent.past_actions[0]/[obs[i][3], 1]): # PREF_SPEED 4th element in obs
-                #         DA[i].extend([j])
-                #         break
 
             elif dones[i] == False or dones[i] != T[i][-1]:
                 samples+=1
@@ -104,12 +99,6 @@ while samples < SAMPLE_TARGET:
                 R[i].extend([rew[i]])
                 CA[i].extend([agent.past_actions[0]])
                 DA[i].extend([agent.policy.last_action_idx])  
-                # print(agent.past_actions[0], obs[i][3], agent.policy.last_action_idx, actions[agent.policy.last_action_idx])
-                # for j,a in enumerate(actions):
-                #     if np.allclose(a, agent.past_actions[0]/[obs[i][3], 1]):
-                #         # print(i, agent.past_actions[0]/[obs[i][3], 1], Actions_Plus().actions[j], a)
-                #         DA[i].extend([j])
-                #         break
 
         step+=1
         total_reward += np.sum(rew)
