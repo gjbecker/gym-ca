@@ -131,7 +131,7 @@ results['c_actions'] = CA_
 results['d_actions'] = DA_
 
 if SAVE:
-    os.makedirs(save_dir)
+    os.makedirs(save_dir, exist_ok=True)
     filename = save_dir + f'{DATASET}.hdf5'
     file = h5py.File(filename, 'w')
     for name in results:  
